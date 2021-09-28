@@ -20,6 +20,13 @@ describe('Reducers::Nodes', () => {
     name: null
   };
 
+  const nodeC = {
+    online: true,
+    name: 'alpha',
+    loading: false,
+    blocks:null
+  }
+
   it('should set initial state by default', () => {
     const action = { type: 'unknown' };
     const expected = getInitialState();
@@ -90,6 +97,38 @@ describe('Reducers::Nodes', () => {
       ]
     };
 
+    expect(reducer(appState, action)).toEqual(expected);
+  });
+
+  it('should handle CHECK_BLOCKS_STATUS_SUCCESS',()=>{
+    const appState = {
+      list: [
+        nodeC
+      ]
+    };
+    const blocks = [{id:"1",data:"data"}]
+    const newNode = {...nodeC,blocks};
+    const action = { type: ActionTypes.CHECK_BLOCKS_STATUS_SUCCESS, node: newNode, blocks};
+    const expected = {
+      list: [
+          {...nodeC,blocks}
+      ]
+    };
+    expect(reducer(appState, action)).toEqual(expected);
+  });
+
+  it('should handle CHECK_BLOCKS_STATUS_FAILURE',()=>{
+    const appState = {
+      list: [
+        nodeC
+      ]
+    };
+    const action = { type: ActionTypes.CHECK_BLOCKS_STATUS_FAILURE, node: nodeC};
+    const expected = {
+      list: [
+          {...nodeC,blocks:[]}
+      ]
+    };
     expect(reducer(appState, action)).toEqual(expected);
   });
 });

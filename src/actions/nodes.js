@@ -23,6 +23,17 @@ const checkNodeStatusFailure = (node) => {
   };
 };
 
+const setBlocksByNodeSuccess = (node, blocks) => ({
+  type: types.CHECK_BLOCKS_STATUS_SUCCESS,
+  node,
+  blocks,
+});
+
+const setBlocksByNodeError = (node) => ({
+  type: types.CHECK_BLOCKS_STATUS_FAILURE,
+  node
+});
+
 export function checkNodeStatus(node) {
   return async (dispatch) => {
     try {
@@ -50,3 +61,14 @@ export function checkNodeStatuses(list) {
     });
   };
 }
+
+export const getBlocksByNode = (node) => async (dispatch) => {
+  try {
+    const res = await fetch(`${node.url}/api/v1/blocks`);
+    const json = await res.json();
+    const data = node.online ? json.data : [];
+    dispatch(setBlocksByNodeSuccess(node, data));
+  } catch (error) {
+    dispatch(setBlocksByNodeError(node));
+  }
+};
